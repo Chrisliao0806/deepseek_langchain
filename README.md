@@ -51,13 +51,13 @@ To integrate the DeepSeek-R1 model with LangChain and run it locally, follow the
 
 2. Run the model:
     ```python
-    response = llm("Your input text here")
+    response = llm.invoke("Your input text here")
     print(response)
     ```
 
 3. Execute the script:
     ```sh
-    python main.py --model-path models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf
+    python main.py --model-path models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf --question "Your input text here"
     ```
 
 ## Goals
