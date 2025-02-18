@@ -10,6 +10,24 @@ def parse_arguments():
         type=str,
         help="The path to the DeepSeek-R1 model file.",
     )
+    parser.add_argument(
+        "--question",
+        default='｜User｜>What is 1+1?<｜Assistant｜>',
+        type=str,
+        help="The question to ask the model.",
+    )
+    parser.add_argument(
+        "--nctx",
+        default=512,
+        type=int,
+        help="The number of tokens to output for context.",
+    )
+    parser.add_argument(
+        "--max-tokens",
+        default=512,
+        type=int,
+        help="The maximum number of tokens to generate.",
+    )
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -17,7 +35,4 @@ if __name__ == "__main__":
     setup_logging("INFO")
     
     llm = deepseek_r1(args.model_path)
-    question = """
-    <｜User｜>What is 1+1?<｜Assistant｜>
-    """
-    print(llm.invoke(question))
+    print(llm.invoke(args.question))
