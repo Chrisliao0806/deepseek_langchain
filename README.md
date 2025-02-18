@@ -7,7 +7,7 @@ The `deepseek_langchain` project aims to enable running the DeepSeek-R1 large la
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/deepseek_langchain.git
+    git clone https://github.com/Chrisliao0806/deepseek_langchain.git
     cd deepseek_langchain
     ```
 
@@ -20,7 +20,7 @@ The `deepseek_langchain` project aims to enable running the DeepSeek-R1 large la
     ```
     https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF
     ```
-    
+
 ## Requirements
 
 - Python 3.10.15
