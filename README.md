@@ -17,11 +17,10 @@ The `deepseek_langchain` project aims to enable running the DeepSeek-R1 large la
     ```
 
 3. Download the DeepSeek-R1 model from Hugging Face:
-    ```sh
-    git lfs install
-    git clone https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF
     ```
-
+    https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF
+    ```
+    
 ## Requirements
 
 - Python 3.10.15
