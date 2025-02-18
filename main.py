@@ -17,3 +17,7 @@ if __name__ == "__main__":
     setup_logging("INFO")
     
     llm = deepseek_r1(args.model_path)
+    question = """
+    <｜User｜>What is 1+1?<｜Assistant｜>
+    """
+    print(llm.invoke(question))
