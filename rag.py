@@ -6,10 +6,9 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from utils.llm_usage import local_llm
 
+
 def parse_arguments():
-    parser = argparse.ArgumentParser(
-        description="RAG model for using langchain"
-    )
+    parser = argparse.ArgumentParser(description="RAG model for using langchain")
     parser.add_argument(
         "--pdf-file",
         default="Chris_Resume.pdf",
@@ -46,7 +45,14 @@ def parse_arguments():
         type=str,
         help='Additional keyword arguments to pass to the model,such as "cpu", "gpu". Defaults to "mps".',
     )
+    parser.add_argument(
+        "--question",
+        default="What engineer is him, and what did he do",
+        type=str,
+        help="The question to ask the model.",
+    )
     return parser.parse_args()
+
 
 class RAG:
     """
@@ -64,6 +70,7 @@ class RAG:
     def retrieve_qa(
         self,
         model_path,
+        query,
         chunk_size=100,
         chunk_overlap=5,
         model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -106,7 +113,6 @@ class RAG:
         qa = RetrievalQA.from_chain_type(
             llm=llm, chain_type="stuff", retriever=retriever, verbose=True
         )
-        query = "What engineer is him, and what did he do"
         return qa.invoke(query)
 
 
@@ -115,6 +121,7 @@ if __name__ == "__main__":
     rag = RAG(pdf_file="Chris_Resume.pdf")
     documents = rag.retrieve_qa(
         model_path=args.model_path,
+        query=args.question,
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
         model_name=args.model_name,
