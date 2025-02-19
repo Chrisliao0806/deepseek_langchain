@@ -35,6 +35,8 @@ The `deepseek_langchain` project aims to enable running the DeepSeek-R1 large la
     llama_cpp_python==0.3.1
     llamacpp==0.1.14
     openai==1.63.1
+    chromadb==0.6.3
+    PyMuPDF==1.25.3
     ```
 
 ## Usage
