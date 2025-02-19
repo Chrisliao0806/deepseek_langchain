@@ -38,13 +38,13 @@ def parse_arguments():
     )
     parser.add_argument(
         "--chunk-size",
-        default=100,
+        default=300,
         type=int,
         help="The maximum size of each text chunk.",
     )
     parser.add_argument(
         "--chunk-overlap",
-        default=5,
+        default=10,
         type=int,
         help="The number of characters that overlap between chunks.",
     )
@@ -86,8 +86,8 @@ class RAG:
         self,
         model_path,
         query,
-        chunk_size=100,
-        chunk_overlap=5,
+        chunk_size=300,
+        chunk_overlap=10,
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         gpu_usage="mps",
     ):
