@@ -1,3 +1,4 @@
+import argparse
 from langchain.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -5,6 +6,47 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from utils.llm_usage import local_llm
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="RAG model for using langchain"
+    )
+    parser.add_argument(
+        "--pdf-file",
+        default="Chris_Resume.pdf",
+        type=str,
+        help="The path to the PDF file.",
+    )
+    parser.add_argument(
+        "--model-path",
+        default="/Users/liaopoyu/Downloads/llm_model/Mistral-Small-24B-Instruct-2501-Q4_K_M.gguf",
+        type=str,
+        help="The path to the DeepSeek-R1 model file.",
+    )
+    parser.add_argument(
+        "--chunk-size",
+        default=100,
+        type=int,
+        help="The maximum size of each text chunk.",
+    )
+    parser.add_argument(
+        "--chunk-overlap",
+        default=5,
+        type=int,
+        help="The number of characters that overlap between chunks.",
+    )
+    parser.add_argument(
+        "--model-name",
+        default="sentence-transformers/all-MiniLM-L6-v2",
+        type=str,
+        help="The name of the model to use for embedding.",
+    )
+    parser.add_argument(
+        "--gpu-usage",
+        default="mps",
+        type=str,
+        help='Additional keyword arguments to pass to the model,such as "cpu", "gpu". Defaults to "mps".',
+    )
+    return parser.parse_args()
 
 class RAG:
     """
@@ -25,7 +67,7 @@ class RAG:
         chunk_size=100,
         chunk_overlap=5,
         model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={"device": "mps"},
+        gpu_usage="mps",
     ):
         """
         Creates a RetrievalQA chain using the provided model and vector database.
@@ -35,11 +77,13 @@ class RAG:
             chunk_size (int, optional): The maximum size of each text chunk. Defaults to 100.
             chunk_overlap (int, optional): The number of characters that overlap between chunks. Defaults to 5.
             model_name (str, optional): The name of the model to use for embedding. Defaults to "sentence-transformers/all-MiniLM-L6-v2".
-            model_kwargs (dict, optional): Additional keyword arguments to pass to the model. Defaults to {"device": "mps"}.
+            gpu_usage (str, optional): Additional keyword arguments to pass to the model,such as "cpu", "gpu". Defaults to "mps".
 
         Returns:
             chain: A RetrievalQA chain created using the provided model and vector database.
         """
+        model_kwargs = {}
+        model_kwargs["device"] = gpu_usage
         # Split text
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size, chunk_overlap=chunk_overlap
@@ -67,12 +111,13 @@ class RAG:
 
 
 if __name__ == "__main__":
+    args = parse_arguments()
     rag = RAG(pdf_file="Chris_Resume.pdf")
     documents = rag.retrieve_qa(
-        model_path="/Users/liaopoyu/Downloads/llm_model/Mistral-Small-24B-Instruct-2501-Q4_K_M.gguf",
-        chunk_size=100,
-        chunk_overlap=5,
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={"device": "mps"},
+        model_path=args.model_path,
+        chunk_size=args.chunk_size,
+        chunk_overlap=args.chunk_overlap,
+        model_name=args.model_name,
+        gpu_usage=args.gpu_usage,
     )
     print(documents)
