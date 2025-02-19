@@ -13,11 +13,6 @@ class RAG:
     Methods:
         __init__():
             Initializes the RAG class.
-
-        read_pdf_file(pdf_file):
-
-
-
         retrieve_qa(pdf_read, model_path, chunk_size=100, chunk_overlap=5, model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": "mps"}):
     """
 
