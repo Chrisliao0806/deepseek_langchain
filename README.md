@@ -39,25 +39,18 @@ The `deepseek_langchain` project aims to enable running the DeepSeek-R1 large la
 
 ## Usage
 
-To integrate the DeepSeek-R1 model with LangChain and run it locally, follow these steps:
+### Method 1: Using `easy_response.py`
 
-1. Load the model:
-    ```python
-    from utils.llm_usage import deepseek_r1
-
-    model_path = "models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf"
-    llm = deepseek_r1(model_path)
-    ```
-
-2. Run the model:
-    ```python
-    response = llm.invoke("Your input text here")
-    print(response)
-    ```
-
-3. Execute the script:
+1. Load the model and run the script:
     ```sh
-    python main.py --model-path models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf --question "Your input text here"
+    python easy_response.py --model-path models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf --question "Your input text here"
+    ```
+
+### Method 2: Using `rag.py`
+
+1. Load the model and run the script:
+    ```sh
+    python rag.py --pdf-file path/to/your/pdf --model-path models/DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf --chunk-size 100 --chunk-overlap 5 --model-name sentence-transformers/all-MiniLM-L6-v2 --gpu-usage mps
     ```
 
 ## Goals
