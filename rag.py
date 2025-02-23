@@ -1,10 +1,12 @@
 import argparse
+import logging
 from langchain.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from utils.llm_usage import local_llm
+from utils.logger import setup_logging
 
 
 def parse_arguments():
@@ -66,6 +68,12 @@ def parse_arguments():
         type=str,
         help="The question to ask the model.",
     )
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        type=str,
+        help="The logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL).",
+    )
     return parser.parse_args()
 
 
@@ -80,6 +88,7 @@ class RAG:
     """
 
     def __init__(self, pdf_file):
+        logging.info("Initializing RAG with PDF file: %s", pdf_file)
         self.pdf_reader = PyMuPDFLoader(pdf_file).load()
 
     def retrieve_qa(
@@ -104,6 +113,11 @@ class RAG:
         Returns:
             chain: A RetrievalQA chain created using the provided model and vector database.
         """
+        logging.info("Starting retrieve_qa process")
+        logging.debug(
+            "Model path: %s, Query: %s, Chunk size: %d, Chunk overlap: %d, Model name: %s",
+            model_path, query, chunk_size, chunk_overlap, model_name
+        )
         model_kwargs = {}
         model_kwargs["device"] = gpu_usage
         # Split text
@@ -111,28 +125,35 @@ class RAG:
             chunk_size=chunk_size, chunk_overlap=chunk_overlap
         )
         all_splits = text_splitter.split_documents(self.pdf_reader)
+        logging.info("Text splitting completed")
 
         # Embed text
         embedding = HuggingFaceEmbeddings(
             model_name=model_name, model_kwargs=model_kwargs
         )
+        logging.info("Text embedding completed")
 
         # Create Chroma vector database
         vectordb = Chroma.from_documents(
             documents=all_splits, embedding=embedding, persist_directory="db"
         )
+        logging.info("Document vectordb completed")
 
         # Create RetrievalQA chain
         llm = local_llm(model_path)
         retriever = vectordb.as_retriever()
+        logging.info("Document retrieval completed")
         qa = RetrievalQA.from_chain_type(
             llm=llm, chain_type="stuff", retriever=retriever, verbose=True
         )
+        logging.info("LLM query completed")
         return qa.invoke(query)
 
 
 if __name__ == "__main__":
     args = parse_arguments()
+    setup_logging(log_level=args.log_level)
+    logging.info("Parsed command-line arguments")
     rag = RAG(pdf_file="Chris_Resume.pdf")
     documents = rag.retrieve_qa(
         model_path=args.model_path,
@@ -142,4 +163,5 @@ if __name__ == "__main__":
         model_name=args.model_name,
         gpu_usage=args.gpu_usage,
     )
+    logging.info("RAG process completed")
     print(documents)
